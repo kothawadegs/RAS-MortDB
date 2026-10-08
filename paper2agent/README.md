@@ -69,3 +69,7 @@ Scope: the detections reproduce the paper's released models. They do not re-esta
 ## Relation to `ras_mortdb_agent/` and the root `mcp_server.py`
 
 Those are earlier hand-written agents. Their tools (recommendations, performance tables) are written out by hand from the README and paper rather than bound to repository code. Under the Paper2Agent split, that knowledge belongs in the paper skill and the computation in the MCP server, which is what this folder provides.
+
+## Web demo (`hf-space/`)
+
+`hf-space/` is a ready-to-deploy Hugging Face Space: a Gradio app around the same verified tool, plus the paper's Table 3, Table 6 and Figure 5. Anyone can use it in a browser without an account. Deployment steps are in [`hf-space/DEPLOY.md`](hf-space/DEPLOY.md).

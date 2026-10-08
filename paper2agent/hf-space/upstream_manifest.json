@@ -1,0 +1,106 @@
+{
+ "repository": "https://github.com/PA-RRanjan/RAS-MortDB",
+ "commit": "6935cde29225de435cbaea1c73aa89fbb267bfa5",
+ "files": {
+  "inference/run_inference.py": {
+   "sha256": "d75dba20fb28922cf86c32a851f383cc3e181446bb3a0415299af3982e6dcba6",
+   "size": 822
+  },
+  "weights/pytorch/yolo11m_best.pt": {
+   "sha256": "e1c7bfaeb59bd03f29a8c632d647d52a81260494db9c91093cd1fcedce61c66a",
+   "size": 40522412
+  },
+  "weights/pytorch/yolo11n_best.pt": {
+   "sha256": "4c0db20a14575e26604f98b1991012cc11c007902d07f637e2132b06d67dc508",
+   "size": 5478618
+  },
+  "weights/pytorch/yolo11s_best.pt": {
+   "sha256": "0f7ace2bfbc0cacfebdba0f3dcc3ed5dbdff757affbd663c71f43e04e2b649d9",
+   "size": 19184218
+  },
+  "weights/pytorch/yolo26m_best.pt": {
+   "sha256": "de73294d4686fd96c7b42b0ab4424fc35b4bde042a370a434c390e94576c15f9",
+   "size": 44032921
+  },
+  "weights/pytorch/yolo26n_best.pt": {
+   "sha256": "875f72532db999d5e7528c81f7e21351117e4b979c1dbcc9b51924c1c2db6a8a",
+   "size": 5393797
+  },
+  "weights/pytorch/yolo26s_best.pt": {
+   "sha256": "4026ba9edb42de722612b777a1e4a4975e04194ea11077fa945c20b9749b961c",
+   "size": 20319045
+  },
+  "weights/pytorch/yolov5mu_best.pt": {
+   "sha256": "aa61e0f83327638488540f7450d4cd3a9ec8bef7bb49a1d9b47f384b899e43dc",
+   "size": 50498030
+  },
+  "weights/pytorch/yolov5nu_best.pt": {
+   "sha256": "f2e9bf5f9122503a1c6801e1e024f4ab092d90854b9652ff546ca795ef001279",
+   "size": 5277762
+  },
+  "weights/pytorch/yolov5su_best.pt": {
+   "sha256": "ed79391d9a95d89f38674490734f287557e7a4ff45e002b523fde543a0401cd0",
+   "size": 18526210
+  },
+  "weights/pytorch/yolov8m_best.pt": {
+   "sha256": "1a01630086542f785d13918e966c709981ea1f1210bf93b2c4559c8b15539bdd",
+   "size": 52037522
+  },
+  "weights/pytorch/yolov8n_best.pt": {
+   "sha256": "92fd2f5231a8e1ee8abbdd798d7f18ff497a56f392734fd232592fb07a09ae4c",
+   "size": 6256170
+  },
+  "weights/pytorch/yolov8s_best.pt": {
+   "sha256": "607d4f888871d0675ca533dfec81ce145b82f7b172d0aafd10ddf95f8dfc142c",
+   "size": 22525482
+  },
+  "weights/onnx/yolo11m.onnx": {
+   "sha256": "1110dca7f06f2d37339abd85ccf1a8e1aef857dae52c3cc36bc17c812a6d9c9b",
+   "size": 80431458
+  },
+  "weights/onnx/yolo11n.onnx": {
+   "sha256": "37bff646dbd791f905fec60658167916cf79eef5fc4ab58931016ab22b73a3c2",
+   "size": 10604900
+  },
+  "weights/onnx/yolo11s.onnx": {
+   "sha256": "2c20af458ca0820a8bffcd9ee3aa12945f36b9f56c9eb2f95e2ce721da39235e",
+   "size": 37929366
+  },
+  "weights/onnx/yolo26m.onnx": {
+   "sha256": "cdbf1bc4474d9184ddf6692663996d865dad70c1187d54778a25e341562f3cd0",
+   "size": 81721447
+  },
+  "weights/onnx/yolo26n.onnx": {
+   "sha256": "580c57aca0c5473e14ac7ba4050284c3ab99d79b18d7f703edfd5d439c71208c",
+   "size": 9805975
+  },
+  "weights/onnx/yolo26s.onnx": {
+   "sha256": "2623d55c832e3134aef09bacf2e1baa29830d009974497fecc315b1eae298603",
+   "size": 38169228
+  },
+  "weights/onnx/yolov5mu.onnx": {
+   "sha256": "40106bc72046657ae420c93049c255924589f5e21e17be384e9c97f7a2c50fc4",
+   "size": 100460696
+  },
+  "weights/onnx/yolov5nu.onnx": {
+   "sha256": "950179fc165911f453eb018fb31a9486562895a992e3e44ccb4234e9a81e4b1b",
+   "size": 10264012
+  },
+  "weights/onnx/yolov5su.onnx": {
+   "sha256": "5bc0139aaa92550916ea8067024298ef16d65cf7d7520d1fc24b4cab6f64a95a",
+   "size": 36700204
+  },
+  "weights/onnx/yolov8m.onnx": {
+   "sha256": "18c4f5796be4602c4bc3a10ea2304d8ccb2fa3a4a77c2790b388762e6f3268c5",
+   "size": 103627318
+  },
+  "weights/onnx/yolov8n.onnx": {
+   "sha256": "d96afa3b743167c96d2c13031a9e4dd6cd57f941b68e2f8b8fe8f5ba90bd9abf",
+   "size": 12266009
+  },
+  "weights/onnx/yolov8s.onnx": {
+   "sha256": "353c63ee437d3d729586be74e0f833eac699861138810c4ebee9151cffeb5b62",
+   "size": 44747517
+  }
+ }
+}
