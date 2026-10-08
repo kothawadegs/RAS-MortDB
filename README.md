@@ -119,6 +119,18 @@ results = model.predict("your_image.jpg", conf=0.25)
 results[0].show()
 ```
 
+## Claude Code / MCP Agent
+
+`mcp_server.py` exposes the benchmark results and weights as an MCP server with five tools: `list_models`, `get_model_info`, `recommend_deployment`, `get_training_config` and `detect_mortality`.
+
+```bash
+pip install -r requirements.txt
+claude mcp add ras-mortdb -- python mcp_server.py   # or use the bundled .mcp.json
+claude mcp list
+```
+
+Start Claude Code in the repository root and ask, for example: *"Which RAS-MortDB model would you recommend for a Raspberry Pi deployment with 300 training images?"* Weight directories can be overridden with the `RAS_MORTDB_WEIGHTS_PT` and `RAS_MORTDB_WEIGHTS_ONNX` environment variables.
+
 ## Sample Detection Results
 
 ### YOLO26n Detections
