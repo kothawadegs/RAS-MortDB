@@ -1,0 +1,49 @@
+name: Agent demo
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Model for detection (bundled: yolo26n, yolov8n)"
+        default: yolo26n
+        type: choice
+        options: [yolo26n, yolov8n]
+      format:
+        description: "Weight format"
+        default: onnx
+        type: choice
+        options: [onnx, pytorch]
+      conf:
+        description: "Confidence threshold"
+        default: "0.25"
+  push:
+    branches: [main]
+    paths: ["ras_mortdb_agent/**", ".github/workflows/agent-demo.yml"]
+
+jobs:
+  demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ras_mortdb_agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install dependencies (CPU-only torch)
+        run: |
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+      - name: Run the MCP server and call its tools
+        run: >
+          python demo_report.py
+          --model "${{ inputs.model || 'yolo26n' }}"
+          --format "${{ inputs.format || 'onnx' }}"
+          --conf "${{ inputs.conf || '0.25' }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: demo-output
+          path: ras_mortdb_agent/demo_output/
