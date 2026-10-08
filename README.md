@@ -1,5 +1,7 @@
 # RAS-MortDB: RAS Fish Mortality Detection Dataset and Model Weights
 
+[![Open in Spaces](https://huggingface.co/datasets/huggingface/badges/resolve/main/open-in-hf-spaces-md.svg)](https://huggingface.co/spaces/opticalResearcher/RAS-MortDB-agent)
+
 ## Overview
 
 RAS-MortDB is a publicly available RAS fish mortality detection dataset and model repository:
@@ -23,6 +25,7 @@ RAS-MortDB/
 ├── inference/
 │   └── run_inference.py   # Example inference script
 ├── docs/assets/           # Sample detection images
+├── paper2agent/           # AI agent for the paper (Paper2Agent): paper skill, MCP server, web demo
 ├── CITATION.cff
 └── LICENSE
 ```
@@ -119,17 +122,22 @@ results = model.predict("your_image.jpg", conf=0.25)
 results[0].show()
 ```
 
-## Claude Code / MCP Agent
+## Paper Agent (Paper2Agent)
 
-`mcp_server.py` exposes the benchmark results and weights as an MCP server with five tools: `list_models`, `get_model_info`, `recommend_deployment`, `get_training_config` and `detect_mortality`.
+[`paper2agent/`](paper2agent/README.md) holds an AI agent for the paper, generated with the [Paper2Agent](https://github.com/jmiao24/Paper2Agent) framework:
+
+- **Paper skill** (`paper2agent/RAS-MortDB-agent/skill/`): the reviewed paper text, figures and tables, packaged so Claude can answer questions about methods and results.
+- **MCP server** (`paper2agent/RAS-MortDB-agent/mcp/`): the tool `ras_mortdb_detect_fish_mortality`, which runs `inference/run_inference.py` with any of the 12 released models. It was independently verified against direct runs of the script.
+- **Web demo**: [huggingface.co/spaces/opticalResearcher/RAS-MortDB-agent](https://huggingface.co/spaces/opticalResearcher/RAS-MortDB-agent). Upload a tank image in the browser, no account needed. The source is in `paper2agent/hf-space/`.
+- **GitHub demo**: **Actions → Agent demo → Run workflow**. It starts the MCP server, runs it on test images and posts a report on the run's summary page.
+
+To use the agent in Claude Code from the repository root, install the server once and start Claude Code. The bundled `.mcp.json` registers the server.
 
 ```bash
-pip install -r requirements.txt
-claude mcp add ras-mortdb -- python mcp_server.py   # or use the bundled .mcp.json
-claude mcp list
+pip install -r paper2agent/RAS-MortDB-agent/mcp/RAS-MortDB-mcp/src/requirements.txt
+cp -R paper2agent/RAS-MortDB-agent/skill/ras-mortdb-yolo26-paper ~/.claude/skills/   # paper skill
+claude
 ```
-
-Start Claude Code in the repository root and ask, for example: *"Which RAS-MortDB model would you recommend for a Raspberry Pi deployment with 300 training images?"* Weight directories can be overridden with the `RAS_MORTDB_WEIGHTS_PT` and `RAS_MORTDB_WEIGHTS_ONNX` environment variables.
 
 ## Sample Detection Results
 

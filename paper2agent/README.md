@@ -66,10 +66,12 @@ The workflow checker (`verify_workflow.py --through complete`) passes. Developme
 
 Scope: the detections reproduce the paper's released models. They do not re-establish the paper's accuracy figures, which come from the paper skill. Only CPU on Linux x86-64 was tested.
 
-## Relation to `ras_mortdb_agent/` and the root `mcp_server.py`
+## Demo on GitHub (`demo/`)
 
-Those are earlier hand-written agents. Their tools (recommendations, performance tables) are written out by hand from the README and paper rather than bound to repository code. Under the Paper2Agent split, that knowledge belongs in the paper skill and the computation in the MCP server, which is what this folder provides.
+`demo/demo_report.py` starts the MCP server over stdio, runs the tool on five test images and on one image with each nano-tier model, and writes a Markdown report. It also pulls the matching Raspberry Pi 5 figures from the paper skill. The **Agent demo** workflow (`.github/workflows/agent-demo.yml`) runs it on demand, on pull requests and on pushes to `main` that touch `paper2agent/`, and puts the report on the run's summary page.
+
+These replace the earlier hand-written agents (`ras_mortdb_agent/` and the root `mcp_server.py`). Those agents returned hard-coded tables rather than calling the repository's code.
 
 ## Web demo (`hf-space/`)
 
-`hf-space/` is a ready-to-deploy Hugging Face Space: a Gradio app around the same verified tool, plus the paper's Table 3, Table 6 and Figure 5. Anyone can use it in a browser without an account. Deployment steps are in [`hf-space/DEPLOY.md`](hf-space/DEPLOY.md).
+`hf-space/` is a ready-to-deploy Hugging Face Space: a Gradio app around the same verified tool, plus the paper's Table 3, Table 6 and Figure 5. It is live at https://huggingface.co/spaces/opticalResearcher/RAS-MortDB-agent, and anyone can use it in a browser without an account. Deployment steps are in [`hf-space/DEPLOY.md`](hf-space/DEPLOY.md).

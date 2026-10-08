@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       model:
-        description: "Model for detection (bundled: yolo26n, yolov8n)"
+        description: "Released model for detection"
         default: yolo26n
         type: choice
-        options: [yolo26n, yolov8n]
+        options: [yolo26n, yolo26s, yolo26m, yolo11n, yolo11s, yolo11m, yolov8n, yolov8s, yolov8m, yolov5nu, yolov5su, yolov5mu]
       format:
         description: "Weight format"
         default: onnx
@@ -18,32 +18,35 @@ on:
         default: "0.25"
   push:
     branches: [main]
-    paths: ["ras_mortdb_agent/**", ".github/workflows/agent-demo.yml"]
+    paths: ["paper2agent/**", ".github/workflows/agent-demo.yml"]
+  pull_request:
+    paths: ["paper2agent/**", ".github/workflows/agent-demo.yml"]
+
+permissions:
+  contents: read
 
 jobs:
   demo:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    defaults:
-      run:
-        working-directory: ras_mortdb_agent
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
-      - name: Install dependencies (CPU-only torch)
+      - name: Install the Paper2Agent MCP server (CPU-only torch when available)
         run: |
-          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
-          pip install -r requirements.txt
-      - name: Run the MCP server and call its tools
-        run: >
-          python demo_report.py
-          --model "${{ inputs.model || 'yolo26n' }}"
-          --format "${{ inputs.format || 'onnx' }}"
-          --conf "${{ inputs.conf || '0.25' }}"
+          pip install torch==2.14.1 torchvision==0.29.1 --index-url https://download.pytorch.org/whl/cpu \
+            || echo "CPU wheel not available; the pinned PyPI build will be installed"
+          pip install -r paper2agent/RAS-MortDB-agent/mcp/RAS-MortDB-mcp/src/requirements.txt
+      - name: Run the MCP server and call its tool
+        env:
+          MODEL: ${{ inputs.model || 'yolo26n' }}
+          FORMAT: ${{ inputs.format || 'onnx' }}
+          CONF: ${{ inputs.conf || '0.25' }}
+        run: python paper2agent/demo/demo_report.py --model "$MODEL" --format "$FORMAT" --conf "$CONF"
       - uses: actions/upload-artifact@v4
         with:
           name: demo-output
-          path: ras_mortdb_agent/demo_output/
+          path: paper2agent/demo/output/

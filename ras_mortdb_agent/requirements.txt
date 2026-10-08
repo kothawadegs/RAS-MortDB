@@ -1,4 +1,0 @@
-fastmcp>=2.0
-ultralytics>=8.4
-onnx>=1.16
-onnxruntime>=1.20
