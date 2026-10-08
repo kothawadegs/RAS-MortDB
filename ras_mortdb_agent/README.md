@@ -93,3 +93,13 @@ Not validated here (would need the full repo + more disk/compute than this
 sandbox had available): reproducing the paper's full 3-seed training runs,
 or the Raspberry Pi 5 edge-latency benchmarks themselves (those numbers are
 taken from the paper as reported, not re-measured).
+
+## Live demo
+
+`demo_report.py` starts `mcp_server.py` as a real MCP server over stdio, calls every tool the way Claude Code would, and writes a Markdown report (deployment recommendations, reported benchmarks, live detections compared against the test-set ground truth) plus annotated images to `demo_output/`.
+
+```bash
+python demo_report.py --model yolo26n --format onnx
+```
+
+On GitHub: **Actions → Agent demo → Run workflow**. The report appears on the run's summary page and the annotated images are attached as the `demo-output` artifact. The workflow also runs on every push to `main` that touches this folder.
