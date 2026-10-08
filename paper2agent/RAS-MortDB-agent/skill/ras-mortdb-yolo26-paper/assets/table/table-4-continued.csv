@@ -1,0 +1,5 @@
+Model,Tier,Infer (ms),Post (ms),Avg (ms),GPU FPS,PT (MB),mAP50/MB (×100),Params (M),Train (h)
+YOLO26m,Medium,2.919,0.128,11.57,86.45,44,2.15,21.8,0.693
+YOLO11m,Medium,2.365,1.587,11.8,84.77,40.5,2.34,20.1,0.592
+YOLOv8m,Medium,2.214,0.84,10.08,99.16,52,1.82,25.9,0.524
+YOLOv5mu,Medium,2.026,1.229,10.72,93.3,50.5,1.87,25.1,0.514

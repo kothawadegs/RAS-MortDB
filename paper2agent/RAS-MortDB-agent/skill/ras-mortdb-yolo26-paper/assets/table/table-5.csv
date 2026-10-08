@@ -1,0 +1,5 @@
+Architecture,Label Assignment,Detection Loss,Supervision
+YOLOv5u,Many-to-one (anchor-free),BCE + CIoU,Dense
+YOLOv8,"Many-to-one (anchor-free, TAL)",BCE + DFL + CIoU,Dense
+YOLO11,"Many-to-one (anchor-free, TAL)",BCE + DFL + CIoU,Dense
+YOLO26,"Dual assignment (one-to-many + one-to-one, STAL)",BCE + CIoU (DFL removed; ProgLoss training),Hybrid (dense + sparse)
