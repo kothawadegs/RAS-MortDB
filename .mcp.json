@@ -2,7 +2,8 @@
   "mcpServers": {
     "ras-mortdb": {
       "command": "python",
-      "args": ["mcp_server.py"]
+      "args": ["paper2agent/RAS-MortDB-agent/mcp/RAS-MortDB-mcp/src/RAS-MortDB_mcp.py"],
+      "env": {"RAS_MORTDB_ROOT": "."}
     }
   }
 }

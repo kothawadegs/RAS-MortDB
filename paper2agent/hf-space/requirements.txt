@@ -1,0 +1,17 @@
+ultralytics==8.4.21
+ultralytics-thop==2.2.2
+torch==2.13.0
+torchvision==0.28.0
+onnx==1.23.2
+onnxruntime==1.30.0
+numpy==2.5.3
+opencv-python==5.0.0.93
+pillow==12.3.0
+pyyaml==6.0.3
+matplotlib==3.11.2
+scipy==1.18.1
+polars==2.0.0
+psutil==7.2.2
+requests==2.34.2
+pandas==3.0.6
+spaces==0.51.3

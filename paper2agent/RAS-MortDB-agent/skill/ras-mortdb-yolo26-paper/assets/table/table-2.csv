@@ -1,0 +1,5 @@
+Split (%),Original Images,After Augmentation,Dead Instances,Live Instances
+Training (70%),1400,2800 (2×),2204,3209
+Validation (20%),400,400 (none),554,734
+Test (10%),200,200 (none),311,310
+Total,2000,3400,3069,4253

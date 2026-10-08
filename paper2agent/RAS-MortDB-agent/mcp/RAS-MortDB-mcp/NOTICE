@@ -1,0 +1,4 @@
+RAS-MortDB (https://github.com/PA-RRanjan/RAS-MortDB, commit 6935cde29225de435cbaea1c73aa89fbb267bfa5)
+Code and dataset: Creative Commons Attribution 4.0 International (CC BY 4.0), Copyright (c) 2026 The Conservation Fund.
+Model weights: AGPL-3.0 (consistent with the Ultralytics YOLO license).
+This MCP wrapper calls inference/run_inference.py from a user-provided checkout; no upstream files are bundled.
