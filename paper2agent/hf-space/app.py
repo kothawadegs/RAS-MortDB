@@ -15,6 +15,13 @@ import threading
 import urllib.request
 from pathlib import Path
 
+try:  # ZeroGPU hardware: `spaces` must be imported before torch/CUDA; elsewhere this is a no-op
+    import spaces
+    _gpu = spaces.GPU(duration=60)
+except ImportError:
+    def _gpu(fn):
+        return fn
+
 import gradio as gr
 import pandas as pd
 
@@ -32,6 +39,13 @@ MODELS = ["yolo26n", "yolo26s", "yolo26m", "yolo11n", "yolo11s", "yolo11m",
 _FETCH_LOCK = threading.Lock()
 
 
+@_gpu
+def _run_tool(image_path: str, model: str, weight_format: str, conf: float) -> dict:
+    """Run the verified MCP tool; on ZeroGPU this executes with a GPU attached."""
+    return ras_mortdb_detect_fish_mortality(image_path=image_path, model=model, weight_format=weight_format,
+                                            conf=conf, output_dir=str(OUTPUTS))
+
+
 def _fetch(rel: str) -> Path:
     """Download one pinned upstream file into the local checkout and verify its SHA-256."""
     entry = MANIFEST["files"][rel]
@@ -41,12 +55,16 @@ def _fetch(rel: str) -> Path:
             return dest
         dest.parent.mkdir(parents=True, exist_ok=True)
         tmp = dest.with_suffix(dest.suffix + ".part")
-        urllib.request.urlretrieve(RAW + rel, tmp)
-        if hashlib.sha256(tmp.read_bytes()).hexdigest() != entry["sha256"]:
-            tmp.unlink(missing_ok=True)
-            raise gr.Error(f"Downloaded {rel} does not match the pinned SHA-256; refusing to use it.")
-        tmp.replace(dest)
-        return dest
+        for _attempt in range(3):  # large weight downloads are occasionally cut short; retry before giving up
+            try:
+                urllib.request.urlretrieve(RAW + rel, tmp)
+            except OSError:
+                continue
+            if hashlib.sha256(tmp.read_bytes()).hexdigest() == entry["sha256"]:
+                tmp.replace(dest)
+                return dest
+        tmp.unlink(missing_ok=True)
+        raise gr.Error(f"Could not download {rel} with the pinned SHA-256 after 3 attempts; please try again.")
 
 
 def detect_fish_mortality(image_path: str, model: str = "yolo26n", weight_format: str = "onnx",
@@ -70,8 +88,7 @@ def detect_fish_mortality(image_path: str, model: str = "yolo26n", weight_format
     _fetch("inference/run_inference.py")
     _fetch(f"weights/pytorch/{model}_best.pt" if weight_format == "pytorch" else f"weights/onnx/{model}.onnx")
     try:
-        r = ras_mortdb_detect_fish_mortality(image_path=image_path, model=model, weight_format=weight_format,
-                                             conf=float(conf), output_dir=str(OUTPUTS))
+        r = _run_tool(image_path, model, weight_format, float(conf))
     except (ValueError, FileNotFoundError, RuntimeError) as exc:
         raise gr.Error(str(exc)) from exc
     level = "Zero" if r["dead_count"] == 0 else "Low (<3 dead)" if r["dead_count"] < 3 else "High (≥3 dead)"

@@ -2,7 +2,7 @@
 
 This folder is a complete Hugging Face Space. Once deployed, anyone can open the link in a browser, with no account needed, upload a tank image and get dead/live fish counts from the paper's own models.
 
-The free **CPU basic** hardware (2 vCPU, 16 GB RAM) is enough. A detection takes about a second; the first use of each model also downloads its weights (10–100 MB).
+It runs on the free **CPU basic** hardware or on **ZeroGPU**. On ZeroGPU the detection function is marked with `@spaces.GPU`, and torch is pinned to 2.13.0, a version ZeroGPU supports. A detection takes about a second; the first use of each model also downloads its weights (10–100 MB).
 
 ## 1. Create a Hugging Face account and token
 
@@ -15,7 +15,7 @@ The free **CPU basic** hardware (2 vCPU, 16 GB RAM) is enough. A detection takes
 2. **Owner**: you, or your lab's organization. **Space name**: e.g. `RAS-MortDB-agent`.
 3. **License**: `agpl-3.0`.
 4. **Space SDK**: **Gradio** (blank template).
-5. **Hardware**: **CPU basic, free**. **Visibility**: **Public**.
+5. **Hardware**: **CPU basic** (free) if offered, otherwise **ZeroGPU**. **Visibility**: **Public**.
 6. Click **Create Space**.
 
 ## 3. Upload this folder
