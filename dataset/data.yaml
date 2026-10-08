@@ -1,0 +1,10 @@
+# RAS-MortDB dataset configuration (Ultralytics YOLO format).
+# Split paths are relative to this file's directory, so the file works from any working directory.
+train: train/images   # 2,800 images (1,400 original + 1,400 augmented)
+val: valid/images     # 400 images
+test: test/images     # 200 images
+
+nc: 2
+names:
+  0: Dead
+  1: Live

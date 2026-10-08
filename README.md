@@ -5,7 +5,7 @@
 ## Overview
 
 RAS-MortDB is a publicly available RAS fish mortality detection dataset and model repository:
-> Ranjan, R. et al. Does YOLO26 Truly Offer Advantages Over Its Predecessors for Edge Deployment in Aquaculture? A Benchmark Study. MDPI AI (2026, under review)
+> Ranjan, R.; Kothawade, G.S.; Sharrer, K.; Tsukuda, S.; Good, C. Does YOLO26 Truly Offer Advantages over Its Predecessors for Edge Deployment? A Benchmark Study in Aquaculture. *AI* **2026**, *7*(9), 354. https://doi.org/10.3390/ai7090354
 
 The dataset comprises 2,000 annotated images of dead and live fish collected from a semi-commercial RAS over a 90-day deployment period under ambient and supplemental lighting conditions. Trained model weights for twelve Ultralytics YOLO architectures across three size tiers are provided in PyTorch (.pt) and ONNX (.onnx) formats.
 
@@ -23,7 +23,8 @@ RAS-MortDB/
 │   └── onnx/              # 12 x ONNX model weights (.onnx)
 ├── training_configs/      # args.yaml for all 84 training runs
 ├── inference/
-│   └── run_inference.py   # Example inference script
+│   ├── run_inference.py   # Example inference script
+│   └── evaluate.py        # Precision/recall/mAP on a labelled split
 ├── docs/assets/           # Sample detection images
 ├── paper2agent/           # AI agent for the paper (Paper2Agent): paper skill, MCP server, web demo
 ├── CITATION.cff
@@ -122,6 +123,16 @@ results = model.predict("your_image.jpg", conf=0.25)
 results[0].show()
 ```
 
+### Evaluation on a Labelled Split
+
+`inference/evaluate.py` runs the Ultralytics validator with `dataset/data.yaml` and prints precision, recall, mAP50 and mAP50-95 (overall and per class) as JSON:
+
+```bash
+python inference/evaluate.py --model weights/pytorch/yolo26n_best.pt --split test   # or --split val
+```
+
+A single released checkpoint gives one run. The tables above report the mean ± SD over three training seeds, so expect values within about that spread. For example, `yolo26n_best.pt` gives 94.0% mAP50 on `val` and 95.1% on `test`.
+
 ## Paper Agent (Paper2Agent)
 
 [`paper2agent/`](paper2agent/README.md) holds an AI agent for the paper, generated with the [Paper2Agent](https://github.com/jmiao24/Paper2Agent) framework:
@@ -152,6 +163,13 @@ claude
 ## Citation
 
 If you use RAS-MortDB, please cite:
+
+**Paper:**
+```
+Ranjan, R.; Kothawade, G.S.; Sharrer, K.; Tsukuda, S.; Good, C. Does YOLO26
+Truly Offer Advantages over Its Predecessors for Edge Deployment? A Benchmark
+Study in Aquaculture. AI 2026, 7(9), 354. https://doi.org/10.3390/ai7090354
+```
 
 **Dataset:**
 ```
