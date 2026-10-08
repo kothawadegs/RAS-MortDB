@@ -32,6 +32,24 @@ RAW = f"https://raw.githubusercontent.com/PA-RRanjan/RAS-MortDB/{COMMIT}/"
 CHECKOUT = Path(os.environ.setdefault("RAS_MORTDB_ROOT", str(Path(tempfile.gettempdir()) / f"ras-mortdb-{COMMIT[:7]}")))
 OUTPUTS = Path(tempfile.gettempdir()) / "ras-mortdb-outputs"
 
+try:
+    import fastmcp  # noqa: F401
+except ImportError:
+    # Hugging Face Spaces always installs gradio[mcp] (mcp<2), which cannot coexist with FastMCP 4 (mcp>=2).
+    # The web app only calls the tool function, so give the unchanged tool module a minimal stand-in whose
+    # FastMCP(...).tool() returns the function as is, matching what FastMCP 4's decorator returns.
+    import sys
+    import types
+
+    class _FastMCPStandIn:
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def tool(self, *args, **kwargs):
+            return lambda fn: fn
+
+    sys.modules["fastmcp"] = types.SimpleNamespace(FastMCP=_FastMCPStandIn)
+
 from tools.run_inference import ras_mortdb_detect_fish_mortality  # noqa: E402  (reads RAS_MORTDB_ROOT per call)
 
 MODELS = ["yolo26n", "yolo26s", "yolo26m", "yolo11n", "yolo11s", "yolo11m",

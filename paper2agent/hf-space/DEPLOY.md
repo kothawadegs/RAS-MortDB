@@ -60,4 +60,6 @@ If the build fails, open **Logs → Build** and send me the last ~30 lines.
   - The app was started from an empty cache; downloads and hash checks passed.
   - It was called through the Gradio API: `tank_0153` + yolo26n ONNX gave 2/3, `tank_0162` + yolo26n PyTorch gave 2/6 at conf 0.25 and 2/5 at conf 0.5, and `tank_0153` + yolo11m ONNX gave 2/3. All four are identical to direct runs of the paper's script.
   - It was also driven in a browser.
-- **No MCP endpoint.** The Space does not expose Gradio's built-in MCP endpoint. That feature needs `mcp<2`, while the verified FastMCP 4 tool needs `mcp>=2`, so the two cannot be installed together. For MCP use, run the package in `paper2agent/RAS-MortDB-agent/mcp/` locally.
+- **No FastMCP on Spaces.** Hugging Face always installs `gradio[mcp]`, which needs `mcp<2`, while FastMCP 4 needs `mcp>=2`. The Space therefore does not install FastMCP. `app.py` gives the unchanged tool module a minimal stand-in whose `FastMCP(...).tool()` returns the function as is, which is what FastMCP 4's decorator returns. The detection code path is identical.
+  - This was re-tested by reproducing Hugging Face's two install steps from a build log: the packages resolve, and the four reference detections match upstream.
+  - For MCP use, run the package in `paper2agent/RAS-MortDB-agent/mcp/` locally.
