@@ -14,7 +14,6 @@ import tempfile
 import threading
 import urllib.request
 from pathlib import Path
-from unittest import mock
 
 try:  # ZeroGPU hardware: `spaces` must be imported before torch/CUDA; elsewhere this is a no-op
     import spaces
@@ -58,21 +57,11 @@ MODELS = ["yolo26n", "yolo26s", "yolo26m", "yolo11n", "yolo11s", "yolo11m",
 _FETCH_LOCK = threading.Lock()
 
 
+@_gpu
 def _run_tool(image_path: str, model: str, weight_format: str, conf: float) -> dict:
-    """Run the verified MCP tool on the CPU (fast enough for these models; uses no ZeroGPU quota)."""
+    """Run the verified MCP tool; on ZeroGPU this executes with a GPU attached."""
     return ras_mortdb_detect_fish_mortality(image_path=image_path, model=model, weight_format=weight_format,
                                             conf=conf, output_dir=str(OUTPUTS))
-
-
-def _run_tool_cpu(image_path: str, model: str, weight_format: str, conf: float) -> dict:
-    """CPU path. On ZeroGPU, torch.cuda.is_available() is True even outside @spaces.GPU, so Ultralytics would pick
-    CUDA and trigger ZeroGPU's "Low-level CUDA init" error; reporting no CUDA here makes it select the CPU."""
-    with mock.patch("torch.cuda.is_available", return_value=False):
-        return _run_tool(image_path, model, weight_format, conf)
-
-
-# Opt-in GPU path: on ZeroGPU hardware this attaches a GPU and counts against the visitor's daily quota.
-_run_tool_gpu = _gpu(_run_tool)
 
 
 def _fetch(rel: str) -> Path:
@@ -97,7 +86,7 @@ def _fetch(rel: str) -> Path:
 
 
 def detect_fish_mortality(image_path: str, model: str = "yolo26n", weight_format: str = "onnx",
-                          conf: float = 0.25, use_gpu: bool = False):
+                          conf: float = 0.25):
     """Count dead and live fish in a recirculating aquaculture system (RAS) tank image.
 
     Runs the RAS-MortDB paper's own inference script (Ranjan et al., AI 2026, 7(9), 354) with one of the 12
@@ -108,7 +97,6 @@ def detect_fish_mortality(image_path: str, model: str = "yolo26n", weight_format
         model: Released model id: yolo26n/s/m, yolo11n/s/m, yolov8n/s/m or yolov5nu/su/mu.
         weight_format: "onnx" (CPU/edge path used for the paper's Raspberry Pi 5 benchmark) or "pytorch".
         conf: Detection confidence threshold in (0, 1]; the paper's script defaults to 0.25.
-        use_gpu: Run on a ZeroGPU GPU instead of the CPU (uses the visitor's daily GPU quota).
 
     Returns:
         Annotated image, a summary of dead/live counts, and a table of detections.
@@ -118,7 +106,7 @@ def detect_fish_mortality(image_path: str, model: str = "yolo26n", weight_format
     _fetch("inference/run_inference.py")
     _fetch(f"weights/pytorch/{model}_best.pt" if weight_format == "pytorch" else f"weights/onnx/{model}.onnx")
     try:
-        r = (_run_tool_gpu if use_gpu else _run_tool_cpu)(image_path, model, weight_format, float(conf))
+        r = _run_tool(image_path, model, weight_format, float(conf))
     except (ValueError, FileNotFoundError, RuntimeError) as exc:
         raise gr.Error(str(exc)) from exc
     level = "Zero" if r["dead_count"] == 0 else "Low (<3 dead)" if r["dead_count"] < 3 else "High (≥3 dead)"
@@ -157,8 +145,6 @@ with gr.Blocks(title="RAS-MortDB Paper Agent") as demo:
                 model = gr.Dropdown(MODELS, value="yolo26n", label="Model")
                 fmt = gr.Radio(["onnx", "pytorch"], value="onnx", label="Weight format")
                 conf = gr.Slider(0.05, 1.0, value=0.25, step=0.05, label="Confidence threshold")
-                use_gpu = gr.Checkbox(False, label="Use GPU (only on ZeroGPU hardware; counts against your daily "
-                                                   "GPU quota; CPU is fast enough for these models)")
                 btn = gr.Button("Detect", variant="primary")
             with gr.Column():
                 out_img = gr.Image(label="Detections")
@@ -167,8 +153,7 @@ with gr.Blocks(title="RAS-MortDB Paper Agent") as demo:
         gr.Examples([[str(p), "yolo26n", "onnx", 0.25] for p in sorted((HERE / "examples").glob("*.jpg"))],
                     inputs=[img, model, fmt, conf], label="Test-set images from RAS-MortDB")
         gr.Markdown("The first run of each model downloads its weights (10–100 MB), so it takes a little longer.")
-        btn.click(detect_fish_mortality, [img, model, fmt, conf, use_gpu], [out_img, out_md, out_tab],
-                  api_name="detect")
+        btn.click(detect_fish_mortality, [img, model, fmt, conf], [out_img, out_md, out_tab], api_name="detect")
     with gr.Tab("Paper results"):
         gr.Markdown("### Table 3: detection accuracy on the full dataset (mean ± SD over 3 seeds)")
         gr.Dataframe(pd.read_csv(HERE / "paper" / "table-3.csv", dtype=str), show_label=False)
