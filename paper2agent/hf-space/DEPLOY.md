@@ -2,7 +2,7 @@
 
 This folder is a complete Hugging Face Space. Once deployed, anyone can open the link in a browser, with no account needed, upload a tank image and get dead/live fish counts from the paper's own models.
 
-It runs on the free **CPU basic** hardware or on **ZeroGPU**. On ZeroGPU the detection function is marked with `@spaces.GPU`, and torch is pinned to 2.13.0, a version ZeroGPU supports. A detection takes about a second; the first use of each model also downloads its weights (10–100 MB).
+It runs on the free **CPU basic** hardware or on **ZeroGPU**. Detection runs on the CPU by default, which takes about a second per image and uses no ZeroGPU quota; the first use of each model also downloads its weights (10–100 MB). A **Use GPU** checkbox runs the same detection in a `@spaces.GPU` function, which counts against the visitor's daily ZeroGPU quota. Torch is pinned to 2.13.0, a version ZeroGPU supports. On a ZeroGPU Space, switching to **Settings → Space hardware → CPU basic** removes the quota entirely.
 
 ## 1. Create a Hugging Face account and token
 
